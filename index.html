@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI Chat Voice Bot Assistant - Beautiful, voice-enabled AI assistant for your website" />
+  <title>Delegate AI — Intelligent Assistant Platform</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      min-height: 100vh;
+      color: #e0e0e0;
+      overflow-x: hidden;
+    }
+
+    /* Navigation */
+    nav {
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0 2rem;
+      height: 64px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #fa6423 0%, #ff8a50 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    nav a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    nav a.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Pages */
+    .page {
+      display: none;
+      min-height: calc(100vh - 64px);
+    }
+
+    .page.active {
+      display: block;
+      animation: pageFadeIn 0.6s ease;
+    }
+
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      padding: 8rem 2rem 6rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(250, 100, 35, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(250, 100, 35, 0.1);
+      border: 1px solid rgba(250, 100, 35, 0.2);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #fa6423;
+      margin-bottom: 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #fa6423;
+      border-radius: 50%;
+      animation: livePulse 2s infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, #fa6423 0%, #ff8a50 50%, #fbbf24 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.5);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #fa6423 0%, #e5520f 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 0.925rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(250, 100, 35, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 0.925rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Feature Grid */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #fa6423;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.45);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(15, 15, 15, 0.9);
+      padding: 2.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      background: rgba(25, 25, 25, 0.95);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(250, 100, 35, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 1.25rem;
+    }
+
+    .card h3 {
+      color: #fff;
+      margin-bottom: 0.75rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.65;
+      font-size: 0.925rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 1.25rem;
+    }
+
+    .feature-list li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.875rem;
+    }
+
+    .feature-list li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #fa6423;
+      font-weight: bold;
+    }
+
+    /* Pricing */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .pricing-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .pricing-card.featured {
+      border-color: rgba(250, 100, 35, 0.3);
+      background: rgba(250, 100, 35, 0.04);
+    }
+
+    .pricing-card.featured::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #fa6423, #e5520f);
+      color: white;
+      padding: 4px 16px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .pricing-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-4px);
+    }
+
+    .pricing-card h3 {
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-card .price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.03em;
+      margin: 1rem 0;
+    }
+
+    .pricing-card .price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .pricing-card .pricing-features {
+      list-style: none;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .pricing-card .pricing-features li {
+      padding: 8px 0;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pricing-card .pricing-features li::before {
+      content: '✓';
+      color: #fa6423;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .pricing-card .btn-primary,
+    .pricing-card .btn-secondary {
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Contact */
+    .contact-container {
+      max-width: 520px;
+      margin: 3rem auto;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 2.5rem;
+      border-radius: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.875rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      font-size: 0.925rem;
+      font-family: inherit;
+      color: #fff;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: rgba(250, 100, 35, 0.5);
+      box-shadow: 0 0 0 3px rgba(250, 100, 35, 0.08);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #fa6423, #e5520f);
+      color: white;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.925rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(250, 100, 35, 0.35);
+    }
+
+    /* Footer hint */
+    .footer-hint {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.875rem;
+    }
+
+    .footer-hint kbd {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero { padding: 5rem 1.5rem 3rem; }
+      .page-content { padding: 2.5rem 1.5rem; }
+      .grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      nav ul { gap: 0; }
+      nav a { padding: 8px 10px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="nav-brand-icon">⚡</div>
+        Delegate AI
+      </div>
+      <ul>
+        <li><a href="#home" onclick="navigateTo('home')" class="nav-link active">Home</a></li>
+        <li><a href="#features" onclick="navigateTo('features')" class="nav-link">Features</a></li>
+        <li><a href="#pricing" onclick="navigateTo('pricing')" class="nav-link">Pricing</a></li>
+        <li><a href="#contact" onclick="navigateTo('contact')" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Home Page -->
+  <div id="home" class="page active">
+    <div class="hero">
+      <div class="hero-badge">Introducing Delegate AI</div>
+      <h1>Your intelligent partner for <span class="gradient-text">everyday work</span></h1>
+      <p>Delegate day-to-day tasks with simple natural language. Text, voice, or just show once — your AI assistant handles the rest.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="navigateTo('features')">Explore Features</button>
+        <button class="btn-secondary" onclick="if(window.chatbot) window.chatbot.open()">Try AI Assistant →</button>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="section-label">Why Delegate AI</div>
+      <div class="section-title">Built for how you actually work</div>
+      <div class="section-desc">Stop context-switching. Let AI handle the repetitive tasks while you focus on what matters.</div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>Instant Responses</h3>
+          <p>Get blazing-fast AI responses powered by Google Gemini. No delays, no waiting — just instant intelligent assistance.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h3>Enterprise Security</h3>
+          <p>Your API keys stay on the server. Bank-grade security with no client-side exposure. Always in control.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎤</div>
+          <h3>Voice-First Design</h3>
+          <p>Speak naturally and get instant responses. Advanced voice recognition that understands context and nuance.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-hint">
+      Try the AI assistant → click the chat bubble or press <kbd>⌘K</kbd>
+    </div>
+  </div>
+
+  <!-- Features Page -->
+  <div id="features" class="page">
+    <div class="page-content">
+      <div class="section-label">Capabilities</div>
+      <div class="section-title">Everything you need, nothing you don't</div>
+      <div class="section-desc">Simple, powerful tools that work together seamlessly.</div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">🎤</div>
+          <h3>Voice Interaction</h3>
+          <p>Speak naturally and get instant responses. Our advanced voice recognition understands context and nuance.</p>
+          <ul class="feature-list">
+            <li>Natural speech recognition</li>
+            <li>Real-time transcription</li>
+            <li>Text-to-speech responses</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <h3>Context Awareness</h3>
+          <p>The AI knows which page you're on and provides relevant help automatically — like a real assistant.</p>
+          <ul class="feature-list">
+            <li>Page detection</li>
+            <li>Contextual suggestions</li>
+            <li>Intelligent routing</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-icon">💬</div>
+          <h3>Natural Conversations</h3>
+          <p>Chat like you're talking to a colleague. The AI remembers context and keeps the conversation flowing.</p>
+          <ul class="feature-list">
+            <li>Conversation memory</li>
+            <li>Context preservation</li>
+            <li>Intelligent follow-ups</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <h3>Fully Responsive</h3>
+          <p>Works perfectly on desktop, tablet, and mobile. Seamless experience across all your devices.</p>
+          <ul class="feature-list">
+            <li>Mobile optimized</li>
+            <li>Touch-friendly interface</li>
+            <li>Adaptive layout</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <h3>Beautiful Design</h3>
+          <p>Modern, clean UI with smooth animations. Professional and enjoyable to use every day.</p>
+          <ul class="feature-list">
+            <li>Dark &amp; light themes</li>
+            <li>Smooth animations</li>
+            <li>Minimal footprint</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>One-Line Integration</h3>
+          <p>Drop in a single script tag and you're done. Works on any website — no complex setup needed.</p>
+          <ul class="feature-list">
+            <li>Single script embed</li>
+            <li>Zero dependencies</li>
+            <li>Plug and play</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing Page -->
+  <div id="pricing" class="page">
+    <div class="page-content" style="text-align: center;">
+      <div class="section-label">Pricing</div>
+      <div class="section-title" style="max-width: 500px; margin: 0 auto 0.5rem;">Simple, transparent pricing</div>
+      <div class="section-desc" style="margin: 0 auto 1rem;">Start free, scale as you grow. No hidden fees, no surprises.</div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Starter</h3>
+          <p style="color: rgba(255,255,255,0.4); font-size: 0.875rem;">For personal projects</p>
+          <div class="price">Free <span>/ forever</span></div>
+          <ul class="pricing-features">
+            <li>1,500 messages per day</li>
+            <li>Voice interaction</li>
+            <li>1 website</li>
+            <li>Community support</li>
+          </ul>
+          <button class="btn-secondary" onclick="navigateTo('contact')">Get Started</button>
+        </div>
+        <div class="pricing-card featured">
+          <h3>Professional</h3>
+          <p style="color: rgba(255,255,255,0.4); font-size: 0.875rem;">For growing businesses</p>
+          <div class="price">$49 <span>/ month</span></div>
+          <ul class="pricing-features">
+            <li>Unlimited messages</li>
+            <li>Voice + custom personas</li>
+            <li>10 websites</li>
+            <li>Priority support</li>
+            <li>Analytics dashboard</li>
+          </ul>
+          <button class="btn-primary" onclick="navigateTo('contact')">Start Free Trial</button>
+        </div>
+        <div class="pricing-card">
+          <h3>Enterprise</h3>
+          <p style="color: rgba(255,255,255,0.4); font-size: 0.875rem;">For large organizations</p>
+          <div class="price">Custom</div>
+          <ul class="pricing-features">
+            <li>Unlimited everything</li>
+            <li>Custom AI training</li>
+            <li>Unlimited websites</li>
+            <li>24/7 dedicated support</li>
+            <li>SLA &amp; compliance</li>
+          </ul>
+          <button class="btn-secondary" onclick="navigateTo('contact')">Contact Sales</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Page -->
+  <div id="contact" class="page">
+    <div class="page-content" style="text-align: center;">
+      <div class="section-label">Get in Touch</div>
+      <div class="section-title" style="max-width: 500px; margin: 0 auto 0.5rem;">Let's build something great</div>
+      <div class="section-desc" style="margin: 0 auto;">Have a question or want a demo? Reach out and we'll respond within 24 hours.</div>
+      <div class="contact-container">
+        <form onsubmit="handleSubmit(event)">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@company.com" required />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell us about your project..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+      </div>
+      <p style="color: rgba(255,255,255,0.3); font-size: 0.875rem; margin-top: 1.5rem;">
+        Or chat with our AI assistant for instant help →
+      </p>
+    </div>
+  </div>
+
+  <!-- Chatbot widget -->
+  <script src="chatbot.js"></script>
+
+  <script>
+    function navigateTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(page).classList.add('active');
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      event.target.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      alert('Thank you! We\'ll be in touch within 24 hours.');
+      event.target.reset();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+          navLinks.forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
