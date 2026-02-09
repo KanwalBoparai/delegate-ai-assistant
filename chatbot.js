@@ -278,7 +278,7 @@ class AIChatbot {
    */
   showInitialGreeting() {
     // Initial message is already in the DOM
-    this.open();
+    // Don't auto-open on mobile or by default
   }
 
   /**
