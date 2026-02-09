@@ -278,7 +278,11 @@ class AIChatbot {
    */
   showInitialGreeting() {
     // Initial message is already in the DOM
-    // Don't auto-open on mobile or by default
+    // Auto-open on desktop only, not on mobile
+    const isMobile = window.innerWidth <= 640;
+    if (!isMobile) {
+      this.open();
+    }
   }
 
   /**
